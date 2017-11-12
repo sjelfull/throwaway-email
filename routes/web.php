@@ -11,15 +11,15 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::resource('addresses', 'AddressController');
 
 Route::group([
-    'prefix' => 'postmark',
+    'prefix' => 'messages',
 ], function () {
     Route::get('/', 'MessageController@index');
+    Route::get('/{message}', 'MessageController@show');
     Route::post('receive', 'MessageController@store');
 });
+
+Route::get('/', 'MainController@index');
+Route::get('/{inbox}/{selectedMessage?}', 'MainController@messages');

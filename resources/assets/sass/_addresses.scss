@@ -1,0 +1,40 @@
+.sidebar {
+  background-color: #eee;
+  width: 300px;
+  height: 100%;
+  padding: 20px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+}
+
+.sidebar__nav {
+
+}
+
+.sidebar__name {
+  font-size: 14px;
+  word-break: break-word;
+}
+
+.addresses {
+  border: 1px solid #eee;
+  border-width: 0 1px 1px;
+  margin: 0 auto;
+}
+
+.address {
+  margin: 0;
+
+  &:not(:first-child) {
+    border-top: 1px solid #eee;
+  }
+}
+
+  .address__link {
+    color: inherit;
+    padding: 20px;
+    display: block;
+    text-decoration: none;
+  }

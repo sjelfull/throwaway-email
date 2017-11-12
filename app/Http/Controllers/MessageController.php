@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Address;
 use App\Message;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Postmark\Inbound;
 
 class MessageController extends Controller
@@ -20,16 +21,6 @@ class MessageController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create ()
-    {
-
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
@@ -38,17 +29,36 @@ class MessageController extends Controller
      */
     public function store (Request $request)
     {
-        $inbound = new Inbound(file_get_contents('php://input'));
+        $inbound   = new Inbound(file_get_contents('php://input'));
+        $domain    = config('throwaway.domain');
+        $recipient = collect($inbound->Recipients())->filter(function ($recipient) use ($domain) {
+            $parts = explode('@', $recipient->Email);
 
-        $recipients = collect($inbound->Recipients());
+            return trim($parts[1]) === $domain;
+        })->transform(function ($recipient) {
+            return $recipient->Email;
+        })->first();
+
+        // Ignore if no matches
+        if ( !$recipient ) {
+            return response()->json([ 'status' => 'ok' ]);
+        }
+
+        //throw_if(!$recipient, \Exception::class);
+
+        $recipientInbox = explode('@', $recipient);
+
+        Log::debug($recipientInbox[0]);
 
         // Get address first
         $address = Address::firstOrCreate([
-            'name' => $recipients->first()->Email,
+            'name' => $recipientInbox[0],
         ]);
 
+        // TODO: Verify request
 
         $message = Message::create([
+            'subject'      => $inbound->Subject(),
             'from_email'   => $inbound->FromEmail(),
             'from_name'    => $inbound->FromName(),
             'reply_to'     => $inbound->ReplyTo(),
@@ -60,8 +70,6 @@ class MessageController extends Controller
             'source'       => $inbound->Json,
             'address_id'   => $address->id,
         ]);
-
-        //app('log')->debug($request->all());
 
         return response()->json([ 'status' => 'ok' ]);
     }
@@ -75,32 +83,7 @@ class MessageController extends Controller
      */
     public function show (Message $message)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Message $message
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function edit (Message $message)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\Message             $message
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function update (Request $request, Message $message)
-    {
-        //
+        return $message->html_body;
     }
 
     /**
@@ -112,6 +95,6 @@ class MessageController extends Controller
      */
     public function destroy (Message $message)
     {
-        //
+        return $message->delete();
     }
 }
