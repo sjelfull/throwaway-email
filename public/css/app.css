@@ -67,6 +67,21 @@ body {
   padding: 20px;
   display: block;
   text-decoration: none;
+  position: relative;
+}
+
+.address__message-count {
+  background: #eee;
+  position: absolute;
+  border-radius: 50%;
+  font-size: 15px;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  position: absolute;
+  right: 20px;
+  top: calc(50% - 20px);
 }
 
 .messages {
@@ -111,6 +126,8 @@ message__date {
 }
 
 .message-view {
+  border: 1px solid #eeeeee69;
   padding: 20px;
+  margin: 20px;
 }
 

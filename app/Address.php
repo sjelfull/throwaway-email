@@ -23,9 +23,11 @@ class Address extends Model
      *
      * @return int
      */
-    public function getMessagesCountAttribute ()
+    public function getMessageCountAttribute ()
     {
-        return $this->messages()->count();
+        $this->loadMissing('messages');
+
+        return $this->messages->count();
     }
 
     public function getEmailAttribute ()

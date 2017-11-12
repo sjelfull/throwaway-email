@@ -10,7 +10,7 @@ class MainController extends Controller
 {
     public function index (Request $request)
     {
-        $addresses = Address::all();
+        $addresses = Address::with('messages')->get();
 
         return view('addresses', compact('addresses'));
     }
