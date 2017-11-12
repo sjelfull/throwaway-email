@@ -3,7 +3,7 @@
 @section('content')
     <aside class="sidebar">
         <h2 class="sidebar__name">{{ $address->email }}</h2>
-        <span class="sidebar__count">{{ $address->messagesCount  }} messages</span>
+        <span class="sidebar__count">{{ $address->messageCount  }} messages</span>
     </aside>
     <div class="messages">
         @foreach($address->messages as $message)
