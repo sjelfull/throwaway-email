@@ -8,7 +8,7 @@
     <div class="messages">
         @foreach($address->messages as $message)
             <div class="message">
-                <a class="message__link" href="/{{ url("{$address->name}/{$message->id}") }}">
+                <a class="message__link" href="{{ url("{$address->name}/{$message->id}") }}">
                     <div class="message__info">
                         <h2 class="message__subject">{{ $message->subject ?? 'No subject' }}</h2>
                         <p class="message__from">{{ $message->from }}</p>
